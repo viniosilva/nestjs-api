@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('CatsController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +15,18 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  afterEach(async () => {
+    await app.close();
+  });
+
+  it('POST /v1/cats', () => {
+    const payload = { birthday: '2000-11-20', name: 'Mimo' };
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .post('/v1/cats')
+      .send(payload)
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body).toEqual({ ...payload, id: 1 });
+      });
   });
 });
