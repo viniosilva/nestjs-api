@@ -21,6 +21,8 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+See API documentation at http:localhost:3000/api-docs
+
 ## Test
 
 ```bash
