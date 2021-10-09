@@ -1,5 +1,10 @@
+import { IsDateString, IsString } from 'class-validator';
+
 export class CreateCatRequest {
+  @IsString()
   readonly name: string;
+
+  @IsDateString()
   readonly birthday: string;
 }
 
