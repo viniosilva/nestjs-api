@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  UseFilters,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { ExceptionFilter } from '../../configuration/filters/exception.filter';
 import { CatsService } from './cats.service';
 import { CreateCatRequest, CreateCatResponse } from './dtos/create-cat.dto';
 import { GetCatByIdResponse } from './dtos/get-cat-by-id.dto';
@@ -23,6 +25,7 @@ import { CatNotFoundException } from './exceptions/cat-not-found.exception';
 
 @Controller('v1/cats')
 @UsePipes(new ValidationPipe({ transform: true }))
+@UseFilters(ExceptionFilter)
 @ApiTags('v1/cats')
 @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
 export class CatsController {
