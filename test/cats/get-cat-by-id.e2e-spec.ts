@@ -3,7 +3,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 
-describe('CatsController: POST /v1/cats', () => {
+describe('CatsController: GET /v1/cats/:catId', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -19,31 +19,30 @@ describe('CatsController: POST /v1/cats', () => {
     await app.close();
   });
 
-  it('should be successful', () => {
+  it('should be successful', async () => {
     const payload = { birthday: '2000-11-20', name: 'Mimo' };
-    return request(app.getHttpServer())
+    const res = await request(app.getHttpServer())
       .post('/v1/cats')
-      .send(payload)
-      .expect(HttpStatus.CREATED)
+      .send(payload);
+    const cat = res.body;
+
+    return request(app.getHttpServer())
+      .get(`/v1/cats/${cat.id}`)
+      .expect(HttpStatus.OK)
       .expect(({ body }) => {
-        expect(body).toEqual({ ...payload, id: 1 });
+        expect(body).toEqual(cat);
       });
   });
 
-  it('should throw Bad Request exception', () => {
-    const payload = { birthday: '10-0-50' };
+  it('should throw Not Found exception', async () => {
     return request(app.getHttpServer())
-      .post('/v1/cats')
-      .send(payload)
-      .expect(HttpStatus.BAD_REQUEST)
+      .get('/v1/cats/1')
+      .expect(HttpStatus.NOT_FOUND)
       .expect(({ body }) => {
         expect(body).toEqual({
-          error: 'Bad Request',
-          message: [
-            'name must be a string',
-            'birthday must be a valid ISO 8601 date string',
-          ],
-          statusCode: 400,
+          error: 'Not Found',
+          message: 'Cat 1 not found',
+          statusCode: 404,
         });
       });
   });

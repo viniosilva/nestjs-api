@@ -13,10 +13,33 @@ describe('CatsService', () => {
   });
 
   describe('createCat', () => {
-    it('should be defined', () => {
+    it('should be successful', () => {
       const request = { birthday: '2000-11-20', name: 'Mimo' };
       const cat = service.createCat(request);
       expect(cat).toEqual({ ...request, id: 1 });
+    });
+
+    it('should be successful when create 2 cats', () => {
+      service.createCat({ birthday: '2000-11-20', name: 'Mimo' });
+
+      const request = { birthday: '2021-10-17', name: 'Lola' };
+      const cat = service.createCat(request);
+      expect(cat).toEqual({ ...request, id: 2 });
+    });
+  });
+
+  describe('getCatById', () => {
+    it('should be successful', () => {
+      const request = { birthday: '2000-11-20', name: 'Mimo' };
+      const cat = service.createCat(request);
+
+      const catFound = service.getCatById(cat.id);
+      expect(catFound).toEqual(cat);
+    });
+
+    it('should throw CatNotFoundException', () => {
+      const fn = () => service.getCatById(1);
+      expect(fn).toThrow('Cat 1 not found');
     });
   });
 });
