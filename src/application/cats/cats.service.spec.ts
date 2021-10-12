@@ -42,4 +42,21 @@ describe('CatsService', () => {
       expect(fn).toThrow('Cat 1 not found');
     });
   });
+
+  describe('updateCat', () => {
+    it('should be successful', () => {
+      const request = { birthday: '2000-11-20', name: 'Mimo' };
+      service.createCat(request);
+
+      const fn = () =>
+        service.updateCat(1, { birthday: '2000-11-20', name: 'Lola' });
+      expect(fn).not.toThrow();
+    });
+
+    it('should throw CatNotFoundException', () => {
+      const fn = () =>
+        service.updateCat(1, { birthday: '2000-11-20', name: 'Mimo' });
+      expect(fn).toThrow('Cat 1 not found');
+    });
+  });
 });

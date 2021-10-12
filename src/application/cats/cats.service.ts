@@ -6,6 +6,7 @@ import {
 import { Cat } from './cat.entity';
 import { CreateCatRequest, CreateCatResponse } from './dtos/create-cat.dto';
 import { GetCatByIdResponse } from './dtos/get-cat-by-id.dto';
+import { UpdateCatRequest } from './dtos/update-cat.dto';
 import { CatNotFoundException } from './exceptions/cat-not-found.exception';
 
 @Injectable()
@@ -34,5 +35,22 @@ export class CatsService {
     if (!cat) throw new CatNotFoundException(catId);
 
     return { ...cat, birthday: dateToyyyyMMdd(cat.birthday) };
+  }
+
+  updateCat(catId: number, request: UpdateCatRequest): void {
+    const i = this.cats.findIndex(({ id }) => id === catId);
+    let cat = this.cats[i];
+    if (!cat) throw new CatNotFoundException(catId);
+
+    const catInfo = Object.keys(request).reduce((acc, key) => {
+      if (key === 'birthday') {
+        acc[key] = yyyyMMddToDate(request[key]);
+      } else {
+        acc[key] = request[key];
+      }
+      return acc;
+    }, {}) as Cat;
+
+    cat = { ...cat, ...catInfo };
   }
 }
