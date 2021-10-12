@@ -53,4 +53,9 @@ export class CatsService {
 
     cat = { ...cat, ...catInfo };
   }
+
+  removeCat(catId: number): void {
+    const i = this.cats.findIndex(({ id }) => id === catId);
+    this.cats.splice(i, 1);
+  }
 }

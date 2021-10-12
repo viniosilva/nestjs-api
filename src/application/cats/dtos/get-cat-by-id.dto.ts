@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsPositive, IsString } from 'class-validator';
+import { IsPositive } from 'class-validator';
 
 export class GetCatByIdParam {
   @ApiProperty({ example: 1 })

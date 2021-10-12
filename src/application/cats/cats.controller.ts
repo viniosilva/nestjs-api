@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,6 +16,7 @@ import {
 import {
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
+  ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
@@ -59,7 +61,7 @@ export class CatsController {
   @Patch(':catId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiParam({ name: 'catId', example: 1 })
-  @ApiNotFoundResponse({ description: 'Cat updated' })
+  @ApiNoContentResponse({ description: 'Cat updated' })
   @ApiNotFoundResponse({ description: 'Cat not found' })
   updateCat(
     @Param('catId') catId: number,
@@ -73,5 +75,13 @@ export class CatsController {
       }
       throw err;
     }
+  }
+
+  @Delete(':catId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiParam({ name: 'catId', example: 1 })
+  @ApiNoContentResponse({ description: 'Cat removed' })
+  removeCatById(@Param('catId') catId: number): void {
+    this.service.removeCat(catId);
   }
 }

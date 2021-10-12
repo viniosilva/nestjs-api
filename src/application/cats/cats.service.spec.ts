@@ -59,4 +59,14 @@ describe('CatsService', () => {
       expect(fn).toThrow('Cat 1 not found');
     });
   });
+
+  describe('removeCat', () => {
+    it('should be successful', () => {
+      const request = { birthday: '2000-11-20', name: 'Mimo' };
+      service.createCat(request);
+
+      const fn = () => service.removeCat(1);
+      expect(fn).not.toThrow();
+    });
+  });
 });
