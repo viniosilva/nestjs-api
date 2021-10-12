@@ -43,6 +43,21 @@ describe('CatsService', () => {
     });
   });
 
+  describe('getCats', () => {
+    it('should be successful', () => {
+      const request = { birthday: '2000-11-20', name: 'Mimo' };
+      const cat = service.createCat(request);
+
+      const catsFound = service.getCats();
+      expect(catsFound).toEqual({ data: [cat] });
+    });
+
+    it('should be successful when list is empty', () => {
+      const catsFound = service.getCats();
+      expect(catsFound).toEqual({ data: [] });
+    });
+  });
+
   describe('updateCat', () => {
     it('should be successful', () => {
       const request = { birthday: '2000-11-20', name: 'Mimo' };

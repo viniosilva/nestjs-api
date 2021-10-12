@@ -6,6 +6,7 @@ import {
 import { Cat } from './cat.entity';
 import { CreateCatRequest, CreateCatResponse } from './dtos/create-cat.dto';
 import { GetCatByIdResponse } from './dtos/get-cat-by-id.dto';
+import { GetCatsResponse } from './dtos/get-cats.dto';
 import { UpdateCatRequest } from './dtos/update-cat.dto';
 import { CatNotFoundException } from './exceptions/cat-not-found.exception';
 
@@ -35,6 +36,15 @@ export class CatsService {
     if (!cat) throw new CatNotFoundException(catId);
 
     return { ...cat, birthday: dateToyyyyMMdd(cat.birthday) };
+  }
+
+  getCats(): GetCatsResponse {
+    return {
+      data: this.cats.map((cat) => ({
+        ...cat,
+        birthday: dateToyyyyMMdd(cat.birthday),
+      })),
+    };
   }
 
   updateCat(catId: number, request: UpdateCatRequest): void {

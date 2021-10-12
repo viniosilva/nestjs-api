@@ -26,6 +26,7 @@ import { ExceptionFilter } from '../../configuration/filters/exception.filter';
 import { CatsService } from './cats.service';
 import { CreateCatRequest, CreateCatResponse } from './dtos/create-cat.dto';
 import { GetCatByIdResponse } from './dtos/get-cat-by-id.dto';
+import { GetCatsResponse } from './dtos/get-cats.dto';
 import { UpdateCatRequest } from './dtos/update-cat.dto';
 import { CatNotFoundException } from './exceptions/cat-not-found.exception';
 
@@ -41,6 +42,12 @@ export class CatsController {
   @ApiCreatedResponse({ description: 'Cat created', type: CreateCatResponse })
   createCat(@Body() request: CreateCatRequest): CreateCatResponse {
     return this.service.createCat(request);
+  }
+
+  @Get()
+  @ApiOkResponse({ description: 'Cats found', type: GetCatsResponse })
+  getCats(): GetCatsResponse {
+    return this.service.getCats();
   }
 
   @Get(':catId')
