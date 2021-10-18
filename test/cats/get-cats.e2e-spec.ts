@@ -30,7 +30,33 @@ describe('CatsController: GET /v1/cats', () => {
       .get('/v1/cats')
       .expect(HttpStatus.OK)
       .expect(({ body }) => {
-        expect(body).toEqual({ data: [cat] });
+        expect(body).toEqual({
+          count: 1,
+          data: [cat],
+          next: null,
+          previous: null,
+        });
+      });
+  });
+
+  it('should be successful with pagination', async () => {
+    const payload = { birthday: '2000-11-20', name: 'Mimo' };
+    const res = await request(app.getHttpServer())
+      .post('/v1/cats')
+      .send(payload);
+    const cat = res.body;
+
+    return request(app.getHttpServer())
+      .get('/v1/cats')
+      .query({ page: 1, size: 5 })
+      .expect(HttpStatus.OK)
+      .expect(({ body }) => {
+        expect(body).toEqual({
+          count: 1,
+          data: [cat],
+          next: null,
+          previous: null,
+        });
       });
   });
 
@@ -39,7 +65,12 @@ describe('CatsController: GET /v1/cats', () => {
       .get('/v1/cats')
       .expect(HttpStatus.OK)
       .expect(({ body }) => {
-        expect(body).toEqual({ data: [] });
+        expect(body).toEqual({
+          count: 0,
+          data: [],
+          next: null,
+          previous: null,
+        });
       });
   });
 });

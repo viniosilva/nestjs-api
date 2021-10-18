@@ -48,13 +48,44 @@ describe('CatsService', () => {
       const request = { birthday: '2000-11-20', name: 'Mimo' };
       const cat = service.createCat(request);
 
-      const catsFound = service.getCats();
-      expect(catsFound).toEqual({ data: [cat] });
+      const catsFound = service.getCats({});
+      expect(catsFound).toEqual({
+        count: 1,
+        data: [cat],
+        next: null,
+        previous: null,
+      });
+    });
+
+    it('should be successful when page is not 1', () => {
+      const cats = [];
+      [
+        { birthday: '2020-11-20', name: 'Mimo' },
+        { birthday: '2019-10-17', name: 'Lola' },
+        { birthday: '2018-09-13', name: 'Fifi' },
+        { birthday: '2021-05-24', name: 'Chuchu' },
+        { birthday: '2021-07-04', name: 'Mingau' },
+      ].forEach((req) => {
+        cats.push(service.createCat(req));
+      });
+
+      const catsFound = service.getCats({ page: 2, size: 2, url: '' });
+      expect(catsFound).toEqual({
+        count: 5,
+        data: cats.slice(2, 4),
+        next: '?page=3&size=2',
+        previous: '?page=1&size=2',
+      });
     });
 
     it('should be successful when list is empty', () => {
-      const catsFound = service.getCats();
-      expect(catsFound).toEqual({ data: [] });
+      const catsFound = service.getCats({ page: 1, size: 5, url: '' });
+      expect(catsFound).toEqual({
+        count: 0,
+        data: [],
+        next: null,
+        previous: null,
+      });
     });
   });
 

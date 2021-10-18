@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PaginationRequest } from '../../configuration/pagination/dtos/pagination.dto';
 import {
   dateToyyyyMMdd,
   yyyyMMddToDate,
@@ -9,6 +10,12 @@ import { GetCatByIdResponse } from './dtos/get-cat-by-id.dto';
 import { GetCatsResponse } from './dtos/get-cats.dto';
 import { UpdateCatRequest } from './dtos/update-cat.dto';
 import { CatNotFoundException } from './exceptions/cat-not-found.exception';
+import {
+  getEnd,
+  getNextPage,
+  getPreviousPage,
+  getStart,
+} from '../../configuration/pagination/pagination.service';
 
 @Injectable()
 export class CatsService {
@@ -38,12 +45,23 @@ export class CatsService {
     return { ...cat, birthday: dateToyyyyMMdd(cat.birthday) };
   }
 
-  getCats(): GetCatsResponse {
+  getCats({
+    page = 1,
+    size = 10,
+    url = '',
+  }: PaginationRequest): GetCatsResponse {
+    const start = getStart(page, size);
+    const end = getEnd(page, size);
+    const data = this.cats.slice(start, end).map((cat) => ({
+      ...cat,
+      birthday: dateToyyyyMMdd(cat.birthday),
+    }));
+
     return {
-      data: this.cats.map((cat) => ({
-        ...cat,
-        birthday: dateToyyyyMMdd(cat.birthday),
-      })),
+      count: this.cats.length,
+      previous: getPreviousPage(url, page, size),
+      next: getNextPage(url, page, size, this.cats.length),
+      data,
     };
   }
 

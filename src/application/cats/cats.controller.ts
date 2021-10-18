@@ -9,6 +9,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseFilters,
   UsePipes,
   ValidationPipe,
@@ -22,6 +23,8 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { Pagination } from '../../configuration/pagination/pagination.decorator';
+import { PaginationRequest } from '../../configuration/pagination/dtos/pagination.dto';
 import { ExceptionFilter } from '../../configuration/filters/exception.filter';
 import { CatsService } from './cats.service';
 import { CreateCatRequest, CreateCatResponse } from './dtos/create-cat.dto';
@@ -45,9 +48,14 @@ export class CatsController {
   }
 
   @Get()
+  @Pagination()
   @ApiOkResponse({ description: 'Cats found', type: GetCatsResponse })
-  getCats(): GetCatsResponse {
-    return this.service.getCats();
+  getCats(@Query() pagination: PaginationRequest): GetCatsResponse {
+    return this.service.getCats({
+      page: Number(pagination.page) || undefined,
+      size: Number(pagination.size) || undefined,
+      url: 'http://localhost:3000/v1/cats',
+    });
   }
 
   @Get(':catId')

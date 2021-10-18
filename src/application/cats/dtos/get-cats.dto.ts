@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsPositive } from 'class-validator';
+import { PaginationResponse } from '../../../configuration/pagination/dtos/pagination.dto';
 
 class CatResponse {
   @ApiProperty({ example: 1 })
@@ -12,6 +12,6 @@ class CatResponse {
   readonly birthday: string;
 }
 
-export class GetCatsResponse {
+export class GetCatsResponse extends PaginationResponse {
   data: CatResponse[];
 }
